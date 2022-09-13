@@ -18,7 +18,7 @@ namespace TDDMicroExercises.TirePressureMonitoringSystem.Test
         {
             // Arrange
             var mockSensor = new Mock<ISensor>();
-            //Mocking sensor data below the threshold (17-21) so that the alarm will be triggered. 
+            //Mocking sensor data below the threshold (17) so that the alarm will be triggered. 
             mockSensor.Setup(s => s.PopNextPressurePsiValue())
                       .Returns(11.0);
 
@@ -30,6 +30,44 @@ namespace TDDMicroExercises.TirePressureMonitoringSystem.Test
             // Assert
             mockSensor.Verify(s => s.PopNextPressurePsiValue());
             Assert.IsTrue(anAlarm.AlarmOn);
+        }
+
+        [Test]
+        public void CheckPressure_high_threshold_should_turn_on_alarm()
+        {
+            // Arrange
+            var mockSensor = new Mock<ISensor>();
+            //Mocking sensor data above the threshold (21) so that the alarm will be triggered. 
+            mockSensor.Setup(s => s.PopNextPressurePsiValue())
+                      .Returns(33.0);
+
+            Alarm anAlarm = new Alarm(mockSensor.Object);
+
+            // Act
+            anAlarm.Check();
+
+            // Assert
+            mockSensor.Verify(s => s.PopNextPressurePsiValue());
+            Assert.IsTrue(anAlarm.AlarmOn);
+        }
+
+        [Test]
+        public void CheckPressure_normal_values_should_not_turn_on_alarm()
+        {
+            // Arrange
+            var mockSensor = new Mock<ISensor>();
+            //Mocking sensor data with normal values between (17-21) so that the alarm will NOT be triggered. 
+            mockSensor.Setup(s => s.PopNextPressurePsiValue())
+                      .Returns(19.0);
+
+            Alarm anAlarm = new Alarm(mockSensor.Object);
+
+            // Act
+            anAlarm.Check();
+
+            // Assert
+            mockSensor.Verify(s => s.PopNextPressurePsiValue());
+            Assert.IsFalse(anAlarm.AlarmOn);
         }
     }
 }
