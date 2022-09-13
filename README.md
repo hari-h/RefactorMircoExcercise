@@ -1,61 +1,37 @@
 # RefactorMircoExcercise
 
-## Timing
-You can count about 90 minutes per exercise: you can organize a 90 minutes implementation with just one exercise, a 90+90 minutes implementation with 2 exercises.
+It took approximately 3.5h to do the first two exercises. (Tire pressure And Unicode file to Html)
 
-## Developers’ Instructions
-Complete any of the exercise of you choice. You must complete at least 1 exercies or do whichever amount you please. Please advise once delivering your result on which exercises were completed and duration taken to complete them.
+30-45 mins - After cloning the solution I took some time to look up the code and get familiar with the solution and read the exercises. In the beginning, I had issues with dependencies. I had to reinstall NUnit package and add new NUnit3TestAdapter, for some reason NUnit test didn't run out of the box. Also, I added the Moq package that I used for the tests. 
 
-This could be code you just inherited from a legacy code-base. Now you want to write unit tests for it, and that is harder than it needs to be.
+Also since you gave credits within your readme file to Luca Minudel I took some time to research who he is, and I found a few links/posts of people who have already finished the exercises. 
 
-For each exercise, there is only one class you are interested in writing tests for right now. As a first step, try to get some kind of test in place before you change the class at all. Identify why the class is hard to write tests for, and which SOLID principles are not being followed.
+The rest of the time I was working on the refactoring. 
 
-When you have some kind of test to lean on, refactor the code and make it testable. Take care when refactoring not to alter the functionality, or change interfaces which other client code may rely on. Add more tests to cover the functionality of the particular class you've been asked to get under test.
-
-Apply the unit testing style and framework you are most comfortable with. You can choose to use stubs or mocks or none at all. If you do, you are free to use the mocking tool that you prefer.
-
-## Please include git history
-If the git history is not included it will impact the assesment negtively. 
+Below you can find some notes that I wrote while writing the code. 
 
 #### 1. **TirePressureMonitoringSystem exercise**:
-Write the unit tests for the Alarm class, refactor the code as much as you need to make the class testable.
+After an initial observation of the provided code, I noticed that to test the alarm properly we need to be able to set/mock/fake the sensor value which wasn't possible right away. 
 
-The Alarm class is designed to monitor tire pressure and set an alarm if the pressure falls outside of the expected range. The Sensor class provided for the exercise simulates the behaviour of a real tire sensor, providing random but realistic values.
+In particular inside the function: 
+
+    Alarm.Check() 
+
+Line: 
+
+    double psiPressureValue = _sensor.PopNextPressurePsiValue(); 
+
+Since I choose to use Mock framework I had to create an Interface for the Sensor class, which led to the change of the Alarm class constructor.  
+
+With these changes, I could continue with the creation of the test class and Mock/setup the sensor data which is turning the alarm on and off. 
 
 #### 2. **UnicodeFileToHtmlTextConverter exercise**:
-Write the unit tests for the UnicodeFileToHtmlTextConverter class, refactor the code as much as you need to make the class testable.
+To test the main function ConvertToHtml inside UnicodeFileToHtmlTextConverter I had to replace the following part:
 
-The UnicodeFileToHtmlTextConverter class is designed to reformat a plain text file for display in a browser.
+    using (TextReader unicodeFileStream = File.OpenText(_fullFilenameWithPath))
 
+so that I can fake/mock the TextReader content without passing an actual file path. 
 
-#### 3. **TicketDispenser exercise**:
-Write the unit tests for the TicketDispenser, refactor the code as much as you need to make the class testable.
+---
 
-The TicketDispenser class is designed to be used to manage a queuing system in a shop. There may be more than one ticket dispenser but the same ticket should not be issued to two different customers.
-
-
-#### 4. **TelemetrySystem exercise**:
-Write the unit tests for the TelemetryDiagnosticControls class, refactor the code as much as you need to make the class testable.
-
-The responsibility of the TelemetryDiagnosticControls class is to establish a connection to the telemetry server (through the TelemetryClient), send a diagnostic request and successfully receive the response that contains the diagnostic info. The TelemetryClient class provided for the exercise simulates the behavior of the real TelemetryClient class, and can respond with either the diagnostic information or a random sequence. The real TelemetryClient class would connect and communicate with the telemetry server via tcp/ip.
-
-#### 5. **Refactor the entire solution architecture**:
-Follow the SOLID principles and refactor the entire code base and change the architecture as you see fit without losing functionality.
-
-## Original Exercise and possible solution
-
-All credits to the original creators.
-The original source can be found here: https://github.com/lucaminudel/TDDwithMockObjectsAndDesignPrinciples/tree/master/TDDMicroExercises#readme
-
-## Share your solutions
-
-Share your solutions via zip and or any other means of sharing.
-
-## Some hints
-Please ensure that you are familiar with our values in the instructions project.  They are important to us.
-
-* simple, elegant code that reads like a narrative
-* thinking about the code more than the writing of the code (we spend a lot of time thinking/debating about what we are writing)
-* transparency and feedback to support continuous learning
-* excellent testing that acts as documentation for the code
-* challenging boundaries where necessary
+That's how far I got until now. For more info feel free to reach out to me. 
