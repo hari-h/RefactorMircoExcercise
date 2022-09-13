@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using System;
 
 namespace TDDMicroExercises.TirePressureMonitoringSystem.Test
@@ -13,12 +14,22 @@ namespace TDDMicroExercises.TirePressureMonitoringSystem.Test
     public class AlarmTest
     {
         [Test]
-        public void CheckPressure_low_treshold_should_turn_on_alarm()
+        public void CheckPressure_low_threshold_should_turn_on_alarm()
         {
-            Alarm anAlarm = new Alarm();
+            // Arrange
+            var mockSensor = new Mock<ISensor>();
+            //Mocking sensor data below the threshold (17-21) so that the alarm will be triggered. 
+            mockSensor.Setup(s => s.PopNextPressurePsiValue())
+                      .Returns(11.0);
+
+            Alarm anAlarm = new Alarm(mockSensor.Object);
+            
+            // Act
             anAlarm.Check();
-            bool isAlarmOn = anAlarm.AlarmOn;
-            Assert.IsTrue(isAlarmOn);
+
+            // Assert
+            mockSensor.Verify(s => s.PopNextPressurePsiValue());
+            Assert.IsTrue(anAlarm.AlarmOn);
         }
     }
 }
